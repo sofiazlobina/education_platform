@@ -1,0 +1,42 @@
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# === VIRTUAL ENVIRONMENTS ===
+venv/
+.venv/
+ENV/
+env/
+
+# === IDE & EDITORS ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === ENV VARIABLES & SECRETS ===
+.env
+.env.local
+.env.*.local
+
+# === DATABASES (Local SQLite) ===
+*.db
+*.sqlite
+*.sqlite3
+
+# === TESTING & COVERAGE ===
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# === OS FILES ===
+.DS_Store
+Thumbs.db
+
+# === LOGS ===
+*.log

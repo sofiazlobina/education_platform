@@ -23,6 +23,13 @@ from app.models import user_course
 # this is the Alembic Config object
 config = context.config
 
+import os
+# Если в Docker передана переменная DATABASE_URL, используем её (PostgreSQL)
+db_url = os.getenv("DATABASE_URL")
+if db_url:
+    config.set_main_option("sqlalchemy.url", db_url)
+# Если переменной нет, будет использована та, что в alembic.ini (SQLite)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 

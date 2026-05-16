@@ -13,8 +13,10 @@ from app.schemas.student import (
     TestAnswerSubmit,
     TestResultResponse,
     MyCourseResponse,
-    CourseProgressResponse # Добавим новую схему ниже
+    CourseProgressResponse
 )
+from app.models.test_result import UserTestResult
+from app.schemas.student import TestResultHistory
 
 router = APIRouter(prefix="/api/v1/student", tags=["Student"])
 
@@ -88,19 +90,23 @@ def submit_test_answer(
     if not test:
         raise HTTPException(status_code=404, detail="Тест не найден")
     
-    # Проверяем, записан ли студент на курс этого теста
-    # (Для упрощения считаем, что тест привязан к курсу через lesson, 
-    # но пока проверим просто по факту прохождения)
-    # В реальном проекте тесты привязаны к урокам, но пока сохраняем прогресс к любому курсу студента
-    
     is_correct = answer_data.answer.strip().lower() == test.correct_answer.strip().lower()
     
-    # Обновляем прогресс (упрощённо: +10% за каждый правильный ответ, макс 100%)
-    # В продакшене нужно считать: (сдано тестов / всего тестов) * 100
+    # Сохраняем результат в историю
+    result = UserTestResult(
+        user_id=current_user.id,
+        test_id=test_id,
+        answer=answer_data.answer,
+        is_correct=is_correct
+    )
+    db.add(result)
+    
+    # Обновляем прогресс курса (упрощённо: +5% за правильный ответ)
     enrollment = db.query(UserCourse).filter(UserCourse.user_id == current_user.id).first()
-    if enrollment:
-        enrollment.progress = min(100.0, enrollment.progress + 10.0)
-        db.commit()
+    if enrollment and is_correct:
+        enrollment.progress = min(100.0, enrollment.progress + 5.0)
+        
+    db.commit()
     
     return TestResultResponse(
         test_id=test_id,
@@ -125,3 +131,28 @@ def get_my_courses(
                 progress=uc.progress
             ))
     return result
+
+@router.get("/test-history", response_model=list[TestResultHistory])
+def get_test_history(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Просмотр оценок за пройденные тесты"""
+    results = (
+        db.query(UserTestResult, Test.question)
+        .join(Test, UserTestResult.test_id == Test.id)
+        .filter(UserTestResult.user_id == current_user.id)
+        .order_by(UserTestResult.created_at.desc())
+        .all()
+    )
+    
+    return [
+        TestResultHistory(
+            test_id=res[0].test_id,
+            question=res[1],
+            your_answer=res[0].answer,
+            is_correct=res[0].is_correct,
+            submitted_at=res[0].created_at
+        )
+        for res in results
+    ]

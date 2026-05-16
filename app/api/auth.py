@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
-from app.core.deps import get_db
+from app.core.deps import get_db, get_current_user
 from app.core.security import get_password_hash, verify_password, create_access_token
 from app.models.user import User
 from app.schemas.user import UserCreate, UserLogin, UserResponse
@@ -47,3 +47,24 @@ def login(
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/change-password")
+def change_password(
+    current_password: str = Body(..., embed=True),
+    new_password: str = Body(..., embed=True),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Смена пароля авторизованным пользователем"""
+    if not verify_password(current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Неверный текущий пароль")
+    
+    current_user.hashed_password = get_password_hash(new_password)
+    db.commit()
+    return {"message": "Пароль успешно изменён"}
+
+@router.post("/refresh-token")
+def refresh_token(current_user: User = Depends(get_current_user)):
+    """Обновление access-токена"""
+    new_token = create_access_token(data={"sub": current_user.username})
+    return {"access_token": new_token, "token_type": "bearer"}

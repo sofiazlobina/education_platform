@@ -54,3 +54,14 @@ class CourseProgressResponse(BaseModel):
     total_tests_passed: int = 0  # Заглушка, можно доработать позже
     
     model_config = ConfigDict(from_attributes=True)
+
+from datetime import datetime
+
+class TestResultHistory(BaseModel):
+    test_id: int
+    question: str
+    your_answer: str
+    is_correct: bool
+    submitted_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
