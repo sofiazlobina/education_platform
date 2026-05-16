@@ -57,7 +57,7 @@ educational_platform/
 
 ###  Где что реализован
 
-# Файлы:
+####  Файлы:
 1. app/api/auth.py — эндпоинты (register, login, change-password, refresh-token)
 2. app/core/security.py — функции безопасности:
 3. verify_password() — проверка пароля
@@ -67,38 +67,38 @@ educational_platform/
 7. app/models/user.py — модель User
 8. app/schemas/user.py — схемы (UserCreate, UserResponse, Token)
 
-# Как добавить новую функцию:
+####  Как добавить новую функцию:
 1. Добавь эндпоинт в app/api/auth.py
 2. При необходимости создай схему в app/schemas/user.py
 3. Используй get_current_user для защиты роута
 
-## Админ-панель (CRUD)
-# Курсы
-# Файл: app/api/courses.py
+### Админ-панель (CRUD)
+####  Курсы
+####  Файл: app/api/courses.py
 - POST /api/v1/admin/courses — создание
 - GET /api/v1/admin/courses — список
 - GET /api/v1/admin/courses/{id} — получение
 - PUT /api/v1/admin/courses/{id} — обновление
 - DELETE /api/v1/admin/courses/{id} — удаление
-# Модель: app/models/course.py (класс Course)
-# Схемы: app/schemas/course.py (CourseCreate, CourseUpdate, CourseResponse)
+####  Модель: app/models/course.py (класс Course)
+####  Схемы: app/schemas/course.py (CourseCreate, CourseUpdate, CourseResponse)
 
-# Уроки
-# Файл: app/api/lessons.py
+###  Уроки
+####  Файл: app/api/lessons.py
 - Все CRUD операции для уроков
-# Модель: app/models/course.py (класс Lesson)
-# Схемы: app/schemas/lesson.py
+####  Модель: app/models/course.py (класс Lesson)
+####  Схемы: app/schemas/lesson.py
 
-# Тесты
-# Файл: app/api/tests.py
+###  Тесты
+####  Файл: app/api/tests.py
 - Все CRUD операции для тестов
-# Модель: app/models/course.py (класс Test)
-# Схемы: app/schemas/test.py
+####  Модель: app/models/course.py (класс Test)
+####  Схемы: app/schemas/test.py
 
 
-## Студенческий API
-# Файл: app/api/students.py
-# Эндпоинты:
+###  Студенческий API
+####  Файл: app/api/students.py
+####  Эндпоинты:
 - GET /api/v1/student/courses — каталог курсов
 - GET /api/v1/student/courses/{id} — детали курса
 - GET /api/v1/student/lessons/{id} — получение урока
@@ -108,34 +108,34 @@ educational_platform/
 - GET /api/v1/student/my-courses — мои курсы с прогрессом
 - GET /api/v1/student/test-history — история результатов тестов
 
-# Модели:
+####  Модели:
 - app/models/user_course.py — UserCourse (связь пользователь-курс + прогресс)
 - app/models/test_result.py — UserTestResult (история тестов)
-# Схемы: app/schemas/student.py
+####  Схемы: app/schemas/student.py
 
 ### База данных
 
-# Подключение: app/core/database.py
+####  Подключение: app/core/database.py
 ```
 engine = create_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 ```
 
-# Модели (таблицы):
+####  Модели (таблицы):
 - app/models/user.py → таблица users
 - app/models/course.py → таблицы courses, lessons, tests
 - app/models/user_course.py → таблица user_courses
 - app/models/test_result.py → таблица user_test_results
 
-# Миграции:
+####  Миграции:
 - Создание: alembic revision --autogenerate -m "description"
 - Применение: alembic upgrade head
 - Откат: alembic downgrade -1
 
 ###  Конфигурация
-# Файл: app/core/config.py
+####  Файл: app/core/config.py
 
-# Как добавить новую переменную:
+####  Как добавить новую переменную:
 - Добавь в .env.example: NEW_VAR=value
 - Добавь в app/core/config.py:
 
@@ -146,19 +146,19 @@ class Settings(BaseSettings):
 
 ###  Тестирование
 
-# Файлы:
+####  Файлы:
 - tests/test_auth.py — тесты регистрации, логина
 - tests/test_courses.py — тесты курсов
 - tests/conftest.py — фикстуры (тестовая БД, клиент)
 
-# Запуск:
+####  Запуск:
 ```
 pytest tests/ -v                    # Все тесты
 pytest tests/test_auth.py -v        # Конкретный файл
 pytest tests/ -v --cov=app          # С покрытием
 ```
 
-# Как добавить тест:
+####  Как добавить тест:
 1. Создай файл tests/test_feature.py
 2. Используй фикстуры из conftest.py
 
@@ -170,7 +170,7 @@ def test_something(client, test_db):
 
 ### Как добавить новую функцию
 
-# Пример: Добавить рейтинг курсов
+#### Пример: Добавить рейтинг курсов
 1. Создай модель (app/models/course.py):
 ```
 class CourseRating(Base):
@@ -219,7 +219,7 @@ alembic upgrade head
 
 5. Добавь тест (tests/test_ratings.py)
 
-## Полезные команды
+### Полезные команды
 ```
 # Активация venv
 .\venv\Scripts\Activate.ps1
