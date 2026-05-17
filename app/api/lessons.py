@@ -14,7 +14,7 @@ def create_lesson(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin_user)
 ):
-    # Проверяем, существует ли курс
+    # Проверяю, что курс вообще существует
     course = db.query(Course).filter(Course.id == lesson_data.course_id).first()
     if not course:
         raise HTTPException(status_code=404, detail="Курс не найден")

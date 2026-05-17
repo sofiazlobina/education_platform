@@ -4,11 +4,11 @@ from app.models.user import User
 def promote_to_admin():
     db = SessionLocal()
     try:
-        # Находим пользователя student1
+        # Ищу пользователя student1
         user = db.query(User).filter(User.username == "student1").first()
         
         if user:
-            user.is_superuser = True  # Делаем админом
+            user.is_superuser = True  # Делаю админом, пусть будет
             db.commit()
             print(f"✅ Успешно! Пользователь {user.username} теперь АДМИНИСТРАТОР!")
         else:

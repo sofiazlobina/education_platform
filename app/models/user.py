@@ -10,4 +10,4 @@ class User(Base):
     username = Column(String(50), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True)
-    is_superuser = Column(Boolean, default=False)  # True = Админ, False = Студент
+    is_superuser = Column(Boolean, default=False)  # True - админ, False - студент

@@ -23,12 +23,12 @@ from app.services.personal_test_generator import generate_personal_questions
 
 router = APIRouter(prefix="/api/v1/student", tags=["Student"])
 
-# 1. Каталог всех курсов
+# Каталог всех курсов
 @router.get("/courses", response_model=list[CourseStudentResponse])
 def get_courses(db: Session = Depends(get_db)):
     return db.query(Course).all()
 
-# 2. Детали курса + список уроков
+# Детали курса и список уроков
 @router.get("/courses/{course_id}", response_model=dict)
 def get_course_details(course_id: int, db: Session = Depends(get_db)):
     course = db.query(Course).filter(Course.id == course_id).first()
@@ -41,7 +41,7 @@ def get_course_details(course_id: int, db: Session = Depends(get_db)):
         "lessons": [LessonStudentResponse.model_validate(l) for l in lessons]
     }
 
-# 3. Получить конкретный урок
+# Получить конкретный урок
 @router.get("/lessons/{lesson_id}", response_model=LessonStudentResponse)
 def get_lesson(lesson_id: int, db: Session = Depends(get_db)):
     lesson = db.query(Lesson).filter(Lesson.id == lesson_id).first()
@@ -49,7 +49,7 @@ def get_lesson(lesson_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Урок не найден")
     return lesson
 
-# 4. Получить тест (без ответа)
+# Получить тест без правильного ответа
 @router.get("/tests/{test_id}", response_model=TestStudentResponse)
 def get_test(test_id: int, db: Session = Depends(get_db)):
     test = db.query(Test).filter(Test.id == test_id).first()
@@ -57,7 +57,7 @@ def get_test(test_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Тест не найден")
     return test
 
-# 🔹 НОВОЕ: Записаться на курс
+# Можно записаться на курс
 @router.post("/courses/{course_id}/enroll", status_code=status.HTTP_201_CREATED)
 def enroll_course(
     course_id: int,
@@ -68,7 +68,7 @@ def enroll_course(
     if not course:
         raise HTTPException(status_code=404, detail="Курс не найден")
     
-    # Проверяем, не записан ли уже
+    # Проверяю, вдруг уже записан
     exists = db.query(UserCourse).filter(
         UserCourse.user_id == current_user.id,
         UserCourse.course_id == course_id
@@ -81,7 +81,7 @@ def enroll_course(
     db.commit()
     return {"message": f"Вы успешно записались на курс '{course.title}'"}
 
-# 🔹 ОБНОВЛЁННОЕ: Отправить ответ на тест с сохранением прогресса
+# Отправка ответа на тест с обновлением прогресса
 @router.post("/tests/{test_id}/submit", response_model=TestResultResponse)
 def submit_test_answer(
     test_id: int,
@@ -95,7 +95,7 @@ def submit_test_answer(
     
     is_correct = answer_data.answer.strip().lower() == test.correct_answer.strip().lower()
     
-    # Сохраняем результат в историю
+    # Сохраняю результат в историю
     result = UserTestResult(
         user_id=current_user.id,
         test_id=test_id,
@@ -104,7 +104,7 @@ def submit_test_answer(
     )
     db.add(result)
     
-    # Обновляем прогресс курса (упрощённо: +5% за правильный ответ)
+    # Обновляю прогресс курса, пока грубо +5% за правильный ответ
     enrollment = db.query(UserCourse).filter(UserCourse.user_id == current_user.id).first()
     if enrollment and is_correct:
         enrollment.progress = min(100.0, enrollment.progress + 5.0)
@@ -117,7 +117,7 @@ def submit_test_answer(
         correct_answer=test.correct_answer if not is_correct else None
     )
 
-# 🔹 НОВОЕ: Личный кабинет: мои курсы
+# Личный кабинет с моими курсами
 @router.get("/my-courses", response_model=list[MyCourseResponse])
 def get_my_courses(
     db: Session = Depends(get_db),

@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-# Эта функция нужна, чтобы настройки загружались только один раз
+# Загружаем настройки один раз и не трогаем лишний раз
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()

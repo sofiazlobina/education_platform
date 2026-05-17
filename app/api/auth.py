@@ -13,12 +13,12 @@ settings = get_settings()
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    # 1. Проверяем, нет ли уже такого логина
+    # Сначала проверяю, занят ли логин
     existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Пользователь с таким логином уже существует")
 
-    # 2. Хэшируем пароль и создаём запись в БД
+    # Хеширую пароль и сохраняю пользователя в БД
     hashed_pw = get_password_hash(user_data.password)
     new_user = User(
         username=user_data.username,
@@ -33,15 +33,15 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),  # Принимаем форму
+    form_data: OAuth2PasswordRequestForm = Depends(),  # Принимаю форму логина
     db: Session = Depends(get_db)
 ):
-    # 1. Ищем пользователя
+    # Ищу пользователя
     user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Неверный логин или пароль")
 
-    # 2. Генерируем токен
+    # Генерирую токен
     access_token = create_access_token(
         data={"sub": user.username},
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
