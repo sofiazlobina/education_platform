@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
 
+    AI_BASE_URL: str = "https://openrouter.ai/api/v1"
+    AI_MODEL: str = "mistralai/mistral-small-3.1-24b-instruct:free"
+    AI_API_KEY: str | None = None
+
     class Config:
         env_file = ".env"
 

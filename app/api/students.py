@@ -13,10 +13,13 @@ from app.schemas.student import (
     TestAnswerSubmit,
     TestResultResponse,
     MyCourseResponse,
-    CourseProgressResponse
+    CourseProgressResponse,
+    PersonalTestGenerateRequest,
+    PersonalTestGenerateResponse
 )
 from app.models.test_result import UserTestResult
 from app.schemas.student import TestResultHistory
+from app.services.personal_test_generator import generate_personal_questions
 
 router = APIRouter(prefix="/api/v1/student", tags=["Student"])
 
@@ -156,3 +159,28 @@ def get_test_history(
         )
         for res in results
     ]
+
+@router.post("/personal-tests/generate", response_model=PersonalTestGenerateResponse)
+def generate_personal_test(
+    payload: PersonalTestGenerateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    enrollment = db.query(UserCourse).filter(
+        UserCourse.user_id == current_user.id,
+        UserCourse.course_id == payload.course_id
+    ).first()
+    if not enrollment:
+        raise HTTPException(status_code=403, detail="Сначала запишитесь на курс")
+
+    lessons = db.query(Lesson).filter(Lesson.course_id == payload.course_id).all()
+    if not lessons:
+        raise HTTPException(status_code=404, detail="В курсе нет материалов для генерации теста")
+
+    generated = generate_personal_questions(lessons=lessons, questions_count=max(1, min(payload.questions_count, 15)))
+
+    return PersonalTestGenerateResponse(
+        course_id=payload.course_id,
+        based_on_lessons=[lesson.id for lesson in lessons],
+        questions=generated
+    )
