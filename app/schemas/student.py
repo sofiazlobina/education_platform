@@ -65,3 +65,20 @@ class TestResultHistory(BaseModel):
     submitted_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class GeneratedTestQuestion(BaseModel):
+    question: str
+    options: List[str]
+    correct_answer: str
+    source_lesson_id: Optional[int] = None
+
+
+class PersonalTestGenerateRequest(BaseModel):
+    course_id: int
+    questions_count: int = 5
+
+
+class PersonalTestGenerateResponse(BaseModel):
+    course_id: int
+    based_on_lessons: List[int]
+    questions: List[GeneratedTestQuestion]
