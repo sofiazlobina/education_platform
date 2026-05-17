@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 
-# Ответ для курса (упрощённый для студента)
+# Ответ по курсу, урезанный для студента
 class CourseStudentResponse(BaseModel):
     id: int
     title: str
@@ -9,7 +9,7 @@ class CourseStudentResponse(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
-# Ответ для урока
+# Ответ по уроку
 class LessonStudentResponse(BaseModel):
     id: int
     title: str
@@ -18,40 +18,40 @@ class LessonStudentResponse(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
-# Ответ для теста (БЕЗ правильного ответа!)
+# Ответ по тесту без правильного варианта
 class TestStudentResponse(BaseModel):
     id: int
     question: str
     options: List[str]
-    # correct_answer скрыт от студента
+    # correct_answer прячем от студента
     
     model_config = ConfigDict(from_attributes=True)
 
-# Запрос на ответ теста
+# Запрос с ответом на тест
 class TestAnswerSubmit(BaseModel):
     answer: str
 
-# Результат проверки теста
+# Результат проверки ответа
 class TestResultResponse(BaseModel):
     test_id: int
     is_correct: bool
-    correct_answer: Optional[str] = None  # Показываем только если ответ неверный
+    correct_answer: Optional[str] = None  # Показываем только если студент ошибся
     
     model_config = ConfigDict(from_attributes=True)
 
-# Мой курс с прогрессом
+# Курс пользователя с прогрессом
 class MyCourseResponse(BaseModel):
     course: CourseStudentResponse
-    progress: float  # 0.0 - 100.0
+    progress: float  # Диапазон прогресса 0.0 - 100.0
     
     model_config = ConfigDict(from_attributes=True)
 
-# Съема прогресса курса
+# Схема прогресса курса
 class CourseProgressResponse(BaseModel):
     course_id: int
     course_title: str
     progress: float
-    total_tests_passed: int = 0  # Заглушка, можно доработать позже
+    total_tests_passed: int = 0  # Пока заглушка, потом можно допилить
     
     model_config = ConfigDict(from_attributes=True)
 

@@ -19,5 +19,5 @@ class UserResponse(BaseModel):
     is_active: bool
     is_superuser: bool
 
-    # Разрешаем создавать схему из объекта SQLAlchemy
+    # Разрешаю собирать схему из SQLAlchemy объекта
     model_config = ConfigDict(from_attributes=True)

@@ -6,24 +6,24 @@ from app.api.lessons import router as lessons_router
 from app.api.tests import router as tests_router
 from app.api.students import router as students_router
 
-# Получаем настройки
+# Подтягиваю настройки
 settings = get_settings()
 
-# Создаем само приложение FastAPI
-# ВАЖНО: переменная должна называться именно "app"
+# Поднимаю приложение FastAPI
+# Важно: переменная должна называться "app", иначе все развалится
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION
 )
 
-# Подключаем роутер аутентификации
+# Подключаю роутер авторизации
 app.include_router(auth_router)
 app.include_router(courses_router)
 app.include_router(lessons_router)
 app.include_router(tests_router)
 app.include_router(students_router)
 
-# Простая проверка, работает ли сервер
+# Простой пинг, чтобы понять что сервер жив
 @app.get("/")
 async def root():
     return {

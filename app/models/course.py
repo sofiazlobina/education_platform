@@ -9,5 +9,5 @@ class Course(Base):
     title = Column(String(100), nullable=False)
     description = Column(Text, nullable=True)
     
-    # Связь: у одного курса много уроков
+    # У курса обычно много уроков
     lessons = relationship("Lesson", back_populates="course", cascade="all, delete-orphan")

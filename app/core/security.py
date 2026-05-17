@@ -6,7 +6,7 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-# Настройка bcrypt для хэширования паролей
+# Настройка bcrypt для хеширования паролей
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

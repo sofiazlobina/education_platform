@@ -37,7 +37,7 @@ def client(db_session):
 
 @pytest.fixture
 def admin_token(client, db_session):
-    # Создаём админа
+    # Поднимаю админа для теста
     admin = User(
         username="admin",
         hashed_password=get_password_hash("adminpass"),
@@ -47,7 +47,7 @@ def admin_token(client, db_session):
     db_session.add(admin)
     db_session.commit()
     
-    # Логинимся
+    # Логинимся под админом
     response = client.post(
         "/api/v1/auth/login",
         data={"username": "admin", "password": "adminpass"}
@@ -70,7 +70,7 @@ def test_create_course(client, admin_token, db_session):
     assert data["id"] == 1
 
 def test_list_courses(client, db_session):
-    # Создаём тестовый курс
+    # Создаю тестовый курс
     course = Course(title="Course 1", description="Desc 1")
     db_session.add(course)
     db_session.commit()

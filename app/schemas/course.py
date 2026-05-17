@@ -1,18 +1,18 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
-from app.schemas.lesson import LessonResponse  # импортируем позже
+from app.schemas.lesson import LessonResponse  # Импорт тут, чтобы не словить циклический импорт
 
-# Схема для создания курса (что принимает админ)
+# Что админ отправляет при создании курса
 class CourseCreate(BaseModel):
     title: str
     description: Optional[str] = None
 
-# Схема для обновления курса
+# Что приходит при обновлении курса
 class CourseUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
 
-# Схема ответа (что отдаём клиенту)
+# Что возвращаем клиенту
 class CourseResponse(BaseModel):
     id: int
     title: str

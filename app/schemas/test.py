@@ -3,7 +3,7 @@ from typing import List
 
 class TestCreate(BaseModel):
     question: str
-    options: List[str]  # ["Вариант 1", "Вариант 2", ...]
+    options: List[str]  # Например: ["Вариант 1", "Вариант 2", ...]
     correct_answer: str
 
 class TestUpdate(BaseModel):

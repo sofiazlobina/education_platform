@@ -7,15 +7,15 @@ from app.core.security import get_password_hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Создаём тестовую БД в памяти (SQLite)
+# Делаю тестовую SQLite базу
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Фикстура для создания тестовой БД
+# Фикстура под тестовую БД
 @pytest.fixture(scope="function")
 def db_session():
-    # Создаём все таблицы
+    # Создаю все таблицы перед тестом
     from app.core.database import Base
     Base.metadata.create_all(bind=engine)
     
@@ -24,10 +24,10 @@ def db_session():
         yield db
     finally:
         db.close()
-        # Очищаем БД после теста
+        # После теста чищу БД
         Base.metadata.drop_all(bind=engine)
 
-# Фикстура для подмены базы данных в приложении
+# Подменяю базу данных в приложении для тестов
 @pytest.fixture(scope="function")
 def client(db_session):
     def override_get_db():
@@ -41,7 +41,7 @@ def client(db_session):
         yield test_client
     app.dependency_overrides.clear()
 
-# Тест регистрации
+# Проверка регистрации
 def test_register_user(client):
     response = client.post(
         "/api/v1/auth/register",
@@ -56,11 +56,11 @@ def test_register_user(client):
     data = response.json()
     assert data["username"] == "testuser"
     assert data["first_name"] == "Test"
-    assert "hashed_password" not in data  # Пароль не должен возвращаться
+    assert "hashed_password" not in data  # Пароль наружу не отдаем
 
-# Тест входа
+# Проверка входа
 def test_login_user(client, db_session):
-    # Создаём пользователя
+    # Создаю пользователя
     user = User(
         username="loginuser",
         hashed_password=get_password_hash("password123"),
@@ -69,7 +69,7 @@ def test_login_user(client, db_session):
     db_session.add(user)
     db_session.commit()
     
-    # Пробуем войти
+    # Пытаюсь войти
     response = client.post(
         "/api/v1/auth/login",
         data={
@@ -82,7 +82,7 @@ def test_login_user(client, db_session):
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
-# Тест неверного пароля
+# Проверка неверного пароля
 def test_login_wrong_password(client, db_session):
     user = User(
         username="wrongpassuser",
