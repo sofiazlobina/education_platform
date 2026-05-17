@@ -58,14 +58,14 @@ educational_platform/
 ###  Где что реализован
 
 ####  Файлы:
-1. app/api/auth.py — эндпоинты (register, login, change-password, refresh-token)
-2. app/core/security.py — функции безопасности:
-3. verify_password() — проверка пароля
-4. get_password_hash() — хеширование
-5. create_access_token() — создание JWT
-6. get_current_user() — получение текущего пользователя из токена
-7. app/models/user.py — модель User
-8. app/schemas/user.py — схемы (UserCreate, UserResponse, Token)
+1. app/api/auth.py - эндпоинты (register, login, change-password, refresh-token)
+2. app/core/security.py - функции безопасности:
+3. verify_password() - проверка пароля
+4. get_password_hash() - хеширование
+5. create_access_token() - создание JWT
+6. get_current_user() - получение текущего пользователя из токена
+7. app/models/user.py - модель User
+8. app/schemas/user.py - схемы (UserCreate, UserResponse, Token)
 
 ####  Как добавить новую функцию:
 1. Добавь эндпоинт в app/api/auth.py
@@ -75,11 +75,11 @@ educational_platform/
 ### Админ-панель (CRUD)
 ####  Курсы
 ####  Файл: app/api/courses.py
-- POST /api/v1/admin/courses — создание
-- GET /api/v1/admin/courses — список
-- GET /api/v1/admin/courses/{id} — получение
-- PUT /api/v1/admin/courses/{id} — обновление
-- DELETE /api/v1/admin/courses/{id} — удаление
+- POST /api/v1/admin/courses - создание
+- GET /api/v1/admin/courses - список
+- GET /api/v1/admin/courses/{id} - получение
+- PUT /api/v1/admin/courses/{id} - обновление
+- DELETE /api/v1/admin/courses/{id} - удаление
 ####  Модель: app/models/course.py (класс Course)
 ####  Схемы: app/schemas/course.py (CourseCreate, CourseUpdate, CourseResponse)
 
@@ -99,18 +99,18 @@ educational_platform/
 ###  Студенческий API
 ####  Файл: app/api/students.py
 ####  Эндпоинты:
-- GET /api/v1/student/courses — каталог курсов
-- GET /api/v1/student/courses/{id} — детали курса
-- GET /api/v1/student/lessons/{id} — получение урока
-- GET /api/v1/student/tests/{id} — получение теста
-- POST /api/v1/student/courses/{id}/enroll — запись на курс
-- POST /api/v1/student/tests/{id}/submit — отправка ответа (с сохранением в историю)
-- GET /api/v1/student/my-courses — мои курсы с прогрессом
-- GET /api/v1/student/test-history — история результатов тестов
+- GET /api/v1/student/courses - каталог курсов
+- GET /api/v1/student/courses/{id} - детали курса
+- GET /api/v1/student/lessons/{id} - получение урока
+- GET /api/v1/student/tests/{id} - получение теста
+- POST /api/v1/student/courses/{id}/enroll - запись на курс
+- POST /api/v1/student/tests/{id}/submit - отправка ответа (с сохранением в историю)
+- GET /api/v1/student/my-courses - мои курсы с прогрессом
+- GET /api/v1/student/test-history - история результатов тестов
 
 ####  Модели:
-- app/models/user_course.py — UserCourse (связь пользователь-курс + прогресс)
-- app/models/test_result.py — UserTestResult (история тестов)
+- app/models/user_course.py - UserCourse (связь пользователь-курс + прогресс)
+- app/models/test_result.py - UserTestResult (история тестов)
 ####  Схемы: app/schemas/student.py
 
 ### База данных
@@ -122,10 +122,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 ```
 
 ####  Модели (таблицы):
-- app/models/user.py → таблица users
-- app/models/course.py → таблицы courses, lessons, tests
-- app/models/user_course.py → таблица user_courses
-- app/models/test_result.py → таблица user_test_results
+- app/models/user.py -> таблица users
+- app/models/course.py -> таблицы courses, lessons, tests
+- app/models/user_course.py -> таблица user_courses
+- app/models/test_result.py -> таблица user_test_results
 
 ####  Миграции:
 - Создание: alembic revision --autogenerate -m "description"
@@ -147,9 +147,9 @@ class Settings(BaseSettings):
 ###  Тестирование
 
 ####  Файлы:
-- tests/test_auth.py — тесты регистрации, логина
-- tests/test_courses.py — тесты курсов
-- tests/conftest.py — фикстуры (тестовая БД, клиент)
+- tests/test_auth.py - тесты регистрации, логина
+- tests/test_courses.py - тесты курсов
+- tests/conftest.py - фикстуры (тестовая БД, клиент)
 
 ####  Запуск:
 ```
